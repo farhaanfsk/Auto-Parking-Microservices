@@ -9,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fsk.microservice.autoparking.enums.Status;
+import com.fsk.microservice.autoparking.enums.Membership;
+import com.fsk.microservice.autoparking.enums.SlotStatus;
 
 @Entity
 @Table
@@ -19,9 +20,19 @@ public class Slot {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private SlotStatus status;
 	@Column(name = "empid")
 	private Long empId;
+	@Enumerated(EnumType.STRING)
+	private Membership membership;
+
+	public Membership getMembership() {
+		return membership;
+	}
+
+	public void setMembership(Membership membership) {
+		this.membership = membership;
+	}
 
 	public Long getEmpId() {
 		return empId;
@@ -39,11 +50,11 @@ public class Slot {
 		this.id = id;
 	}
 
-	public Status getStatus() {
+	public SlotStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(SlotStatus status) {
 		this.status = status;
 	}
 

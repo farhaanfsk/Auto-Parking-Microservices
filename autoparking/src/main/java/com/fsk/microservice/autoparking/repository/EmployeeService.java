@@ -6,4 +6,5 @@ import com.fsk.microservice.autoparking.entity.Employee;
 
 public interface EmployeeService extends JpaRepository<Employee, Long> {
 
+	public Employee findSlotByEmpId(Long empid);
 }
