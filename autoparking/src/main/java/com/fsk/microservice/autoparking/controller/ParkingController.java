@@ -40,7 +40,7 @@ public class ParkingController {
 
 	@GetMapping("/slots")
 	public List<Slot> listAvailableSlots(@RequestBody long empid) {
-		Membership empMembership = empService.findSlotByEmpId(empid).getMembership();
+		Membership empMembership = empService.findMembershipByEmpId(empid);
 		return slots.findAll().stream().filter(i -> Objects.isNull(i.getEmpId())).filter(i -> {
 			if (empMembership.equals(Membership.GOLD)) {
 				return true;
