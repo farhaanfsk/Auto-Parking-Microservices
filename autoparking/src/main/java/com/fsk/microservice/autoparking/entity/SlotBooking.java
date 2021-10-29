@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +16,6 @@ import lombok.Setter;
 @Table
 @Setter
 @Getter
-@AllArgsConstructor
 public class SlotBooking {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

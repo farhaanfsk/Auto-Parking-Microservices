@@ -1,5 +1,6 @@
 package com.fsk.microservice.autoparking.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,7 +14,6 @@ import javax.persistence.Table;
 import com.fsk.microservice.autoparking.enums.SlotStatus;
 import com.fsk.microservice.autoparking.enums.VehicleType;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +21,6 @@ import lombok.Setter;
 @Table
 @Setter
 @Getter
-@AllArgsConstructor
 public class Slot {
 
 	@Id
@@ -29,11 +28,13 @@ public class Slot {
 	private long id;
 	@Enumerated(EnumType.STRING)
 	private SlotStatus status;
+	@Column(name = "is_reserved", columnDefinition="BIT")
 	private boolean isReserved;
+	@Column(name = "vehicle_type")
 	@Enumerated(EnumType.STRING)
 	private VehicleType slotType;
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name = "office_id",referencedColumnName = "id")
 	private Office office;
 	
 
