@@ -21,9 +21,11 @@ public class SlotBooking {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	@Column(name = "emp_id")
-	private long empid;
+	private long empId;
 	@Column(name = "slot_id")
-	private long slotid;
+	private long slotId;
+	@Column(name = "vehicle_id")
+	private long vehicleId;
 	@Column(name = "start_time")
 	private Date startTime;
 	@Column(name = "end_time")

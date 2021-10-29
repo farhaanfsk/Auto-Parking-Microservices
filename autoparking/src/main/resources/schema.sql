@@ -24,10 +24,12 @@ CREATE TABLE Slot_Booking(
 id INT PRIMARY KEY IDENTITY(1,1),
 slot_id INT NOT NULL,
 emp_id INT NOT NULL,
+vehicle_id INT NOT NULL,
 start_time DATETIME NOT NULL,
 end_time DATETIME NOT NULL,
 FOREIGN KEY(emp_id) REFERENCES Employee(emp_id),
 FOREIGN KEY(slot_id) REFERENCES Slot(id),
+FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id)
 );
 
 

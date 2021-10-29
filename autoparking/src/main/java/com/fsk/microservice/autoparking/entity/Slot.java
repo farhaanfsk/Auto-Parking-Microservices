@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fsk.microservice.autoparking.enums.SlotStatus;
 import com.fsk.microservice.autoparking.enums.VehicleType;
 
@@ -33,8 +34,9 @@ public class Slot {
 	@Column(name = "vehicle_type")
 	@Enumerated(EnumType.STRING)
 	private VehicleType slotType;
+	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "office_id",referencedColumnName = "id")
+	@JoinColumn(name = "office_id")
 	private Office office;
 	
 
