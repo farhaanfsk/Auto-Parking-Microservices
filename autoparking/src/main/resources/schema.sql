@@ -20,6 +20,15 @@ office_id INT,
 FOREIGN KEY(office_id) REFERENCES office(id)
 );
 
+CREATE TABLE Vehicle(
+id INT PRIMARY KEY IDENTITY(1,1),
+vehicle_no VARCHAR(20) NOT NULL,
+is_company_owned BIT,
+emp_id INT NOT NULL,
+vehicle_type VARCHAR(20) NOT NULL,
+FOREIGN KEY(emp_id) REFERENCES Employee(emp_id),
+);
+
 CREATE TABLE Slot_Booking(
 id INT PRIMARY KEY IDENTITY(1,1),
 slot_id INT NOT NULL,
@@ -30,14 +39,4 @@ end_time DATETIME NOT NULL,
 FOREIGN KEY(emp_id) REFERENCES Employee(emp_id),
 FOREIGN KEY(slot_id) REFERENCES Slot(id),
 FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id)
-);
-
-
-CREATE TABLE Vehicle(
-id INT PRIMARY KEY IDENTITY(1,1),
-vehicle_no VARCHAR(20) NOT NULL,
-is_company_owned BIT,
-emp_id INT NOT NULL,
-vehicle_type VARCHAR(20) NOT NULL,
-FOREIGN KEY(emp_id) REFERENCES Employee(emp_id),
 );

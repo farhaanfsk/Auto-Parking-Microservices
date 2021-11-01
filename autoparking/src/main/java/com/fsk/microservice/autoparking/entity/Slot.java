@@ -25,7 +25,7 @@ import lombok.Setter;
 public class Slot {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@Enumerated(EnumType.STRING)
 	private SlotStatus status;
