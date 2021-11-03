@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fsk.microservice.autoparking.enums.SlotStatus;
 import com.fsk.microservice.autoparking.enums.VehicleType;
 
 import lombok.Getter;
@@ -27,8 +26,6 @@ public class Slot {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Enumerated(EnumType.STRING)
-	private SlotStatus status;
 	@Column(name = "is_reserved", columnDefinition="BIT")
 	private boolean isReserved;
 	@Column(name = "vehicle_type")
