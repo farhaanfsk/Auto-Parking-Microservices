@@ -51,9 +51,12 @@ public class ParkingService {
 		Optional<Vehicle> vehicle = vehicleRepo.findById(slotBooking.getVehicleId());
 		checkForValidParkingData(slot, emp, vehicle);
 		checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
-		List<Long> bookedSlots = slotBookingRepo.findBySlotBetween(slotBooking.getSlotId(), slotBooking.getStartTime(),
-				slotBooking.getEndTime());
-		if (bookedSlots.isEmpty()) {
+
+		List<Long> bookedSlots = slotBookingRepo.findBySlotAndTimeBetween(slotBooking.getSlotId(),
+				slotBooking.getStartTime(), slotBooking.getEndTime());
+		List<Long> empBookedSlots = slotBookingRepo.findByEmpIdAndTimeBetween(slotBooking.getEmpId(),
+				slotBooking.getStartTime(), slotBooking.getEndTime());
+		if (bookedSlots.isEmpty() && empBookedSlots.isEmpty()) {
 			SlotBooking booking = slotBookingRepo.save(slotBooking);
 			return new ParkingResponse(HttpStatus.ACCEPTED.value(),
 					"Slot is Booking is successfully Your booking Id Slot id : " + booking.getId());
@@ -78,7 +81,7 @@ public class ParkingService {
 
 	public SlotBooking getBookingStatus(long bookingId) {
 		return slotBookingRepo.findById(bookingId)
-				.orElseThrow(() -> new InvalidValueException("Employee id provided is invalid :" + bookingId));
+				.orElseThrow(() -> new InvalidValueException("Booking id provided is invalid :" + bookingId));
 	}
 
 	public boolean checkForValidParkingData(Optional<Slot> slot, Optional<Employee> emp, Optional<Vehicle> vehicle) {

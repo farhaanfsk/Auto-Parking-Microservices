@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +33,9 @@ public class ParkingController {
 	}
 
 	@GetMapping("/slots/{officeId}")
-	public List<Slot> listAvailableSlots(@PathVariable int officeId, @RequestParam LocalDateTime startTime,
-			LocalDateTime endTime) {
+	public List<Slot> listAvailableSlots(@PathVariable int officeId,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime) {
 		log.info("id found is : {}", officeId);
 		parkingService.checkForValidBookingTime(startTime, endTime);
 		return parkingService.getAllAvailableSlots(officeId, startTime, endTime);

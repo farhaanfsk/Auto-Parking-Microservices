@@ -13,7 +13,6 @@ city VARCHAR(50) NOT NULL,
 
 CREATE TABLE Slot(
 id INT PRIMARY KEY IDENTITY(1,1),
-status VARCHAR(20) NOT NULL,
 is_reserved BIT,
 vehicle_type VARCHAR(20) NOT NULL,
 office_id INT,
