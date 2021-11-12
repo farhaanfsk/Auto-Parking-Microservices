@@ -2,6 +2,7 @@ package com.fsk.microservice.autoparking.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,39 +26,58 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/autoparking")
 public class ParkingController {
 
-	private ParkingService parkingService;
+    private ParkingService parkingService;
 
-	@Autowired
-	public ParkingController(ParkingService parkingService) {
-		this.parkingService = parkingService;
-	}
+    @Autowired
+    public ParkingController(ParkingService parkingService) {
+        this.parkingService = parkingService;
+    }
 
-	@GetMapping("/slots/{officeId}")
-	public List<Slot> listAvailableSlots(@PathVariable int officeId,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime) {
-		log.info("id found is : {}", officeId);
-		parkingService.checkForValidBookingTime(startTime, endTime);
-		return parkingService.getAllAvailableSlots(officeId, startTime, endTime);
-	}
+    @GetMapping("/slots/{officeId}")
+    public List<Slot> listAvailableSlots(@PathVariable int officeId,
+                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Optional<LocalDateTime> startTime,
+                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Optional<LocalDateTime> endTime) {
+        log.info("startTime found is : {}", startTime);
+        log.info("endTime found is : {}", endTime);
+        LocalDateTime st = startTime.orElseGet(() -> LocalDateTime.now().plusHours(1));
+        LocalDateTime et = startTime.orElseGet(() -> LocalDateTime.now().plusHours(9));
+        parkingService.checkForValidBookingTime(st, et);
+        return parkingService.getAllAvailableSlots(officeId, st, et);
+    }
 
-	@PostMapping("/book")
-	public ParkingResponse book(@RequestBody SlotBooking slot) {
-		return parkingService.bookParking(slot);
-	}
+    @PostMapping("/book")
+    public ParkingResponse book(@RequestBody SlotBooking slotBooking) {
+        parkingService.checkForValidParkingData(slotBooking);
+        parkingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
+        return parkingService.bookParking(slotBooking);
+    }
 
-	@PostMapping("/cancel")
-	public ParkingResponse cancel(@RequestBody SlotBooking slot) {
-		return parkingService.cancelBooking(slot);
-	}
+    @PostMapping("/book/week")
+    public List<ParkingResponse> bookForWeek(@RequestBody SlotBooking slotBooking) {
+        parkingService.checkForValidParkingData(slotBooking);
+        parkingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
+        return parkingService.bookParkingForContinuousDays(slotBooking, 7);
+    }
 
-	@GetMapping("/mybookings")
-	public List<SlotBooking> listAllBookings(@RequestBody long empId) {
-		return parkingService.getAllBookings(empId);
-	}
+    @PostMapping("/book/{days}")
+    public List<ParkingResponse> bookForNoOfDays(@RequestBody SlotBooking slotBooking, @PathVariable long days) {
+        parkingService.checkForValidParkingData(slotBooking);
+        parkingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
+        return parkingService.bookParkingForContinuousDays(slotBooking, days);
+    }
 
-	@GetMapping("/mybookings/status/{bookingId}")
-	public SlotBooking getBookingStatus(@RequestBody long bookingId) {
-		return parkingService.getBookingStatus(bookingId);
-	}
+    @PostMapping("/cancel")
+    public ParkingResponse cancel(@RequestBody SlotBooking slot) {
+        return parkingService.cancelBooking(slot);
+    }
+
+    @GetMapping("/mybookings")
+    public List<SlotBooking> listAllBookings(@RequestBody long empId) {
+        return parkingService.getAllBookings(empId);
+    }
+
+    @GetMapping("/mybookings/{bookingId}")
+    public SlotBooking getBooking(@PathVariable long bookingId) {
+        return parkingService.getBookingStatus(bookingId);
+    }
 }
