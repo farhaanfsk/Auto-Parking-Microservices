@@ -25,10 +25,10 @@ import com.fsk.microservice.autoparking.repository.VehicleRepository;
 @Service
 @Slf4j
 public class ParkingService {
-    private SlotRepository slotRepo;
-    private SlotBookingRepository slotBookingRepo;
-    private VehicleRepository vehicleRepo;
-    private EmployeeRepository empRepo;
+    private final SlotRepository slotRepo;
+    private final SlotBookingRepository slotBookingRepo;
+    private final VehicleRepository vehicleRepo;
+    private final EmployeeRepository empRepo;
 
     public ParkingService(SlotRepository slotRepo, SlotBookingRepository slotBookingRepo, VehicleRepository vehicleRepo,
                           EmployeeRepository empRepo) {
@@ -38,7 +38,7 @@ public class ParkingService {
         this.empRepo = empRepo;
     }
 
-    public List<Slot> getAllAvailableSlots(int officeId, LocalDateTime StartTime, LocalDateTime endTIme) {
+    public List<Slot> getAvailableSlotsOfOfficeInATimeSlot(int officeId, LocalDateTime StartTime, LocalDateTime endTIme) {
         List<Slot> slots = Optional.ofNullable(slotRepo.findSlotByOfficeId(officeId))
                 .orElseThrow(() -> new InvalidValueException("office id provided is invalid :" + officeId));
 
@@ -76,11 +76,17 @@ public class ParkingService {
             return new ParkingResponse(HttpStatus.ACCEPTED.value(),
                     "Slot is booking is cancelled for Slot id : " + slotBooking.getSlotId());
         } else {
-            throw new InvalidValueException("Booking Data is not matching");
+            throw new InvalidValueException("Booking data is invalid");
         }
     }
 
-    public SlotBooking getBookingStatus(long bookingId) {
+    public List<ParkingResponse> cancelMultipleBookings(List<SlotBooking> slotBookings) {
+        List<ParkingResponse> responses = new ArrayList<>();
+        slotBookings.forEach(i -> responses.add(cancelBooking(i)));
+        return responses;
+    }
+
+    public SlotBooking getBookingDetails(long bookingId) {
         return slotBookingRepo.findById(bookingId)
                 .orElseThrow(() -> new InvalidValueException("Booking id provided is invalid :" + bookingId));
     }
@@ -99,12 +105,7 @@ public class ParkingService {
     }
 
     public List<SlotBooking> getAllBookings(long empId) {
-        Optional<Employee> emp = empRepo.findById(empId);
-        if (emp.isPresent()) {
-            return slotBookingRepo.findByEmpId(empId);
-        } else {
-            throw new InvalidValueException("Employee id provided is invalid :" + empId);
-        }
+        return slotBookingRepo.findByEmpId(empId);
     }
 
     public void checkForValidBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
@@ -127,6 +128,21 @@ public class ParkingService {
             newBooking.setEndTime(slot.getEndTime().plusDays(i));
             responses.add(bookParking(newBooking));
         }
+        return responses;
+    }
+
+    public List<ParkingResponse> bookParkingForSpecificDays(List<SlotBooking> slots) {
+        List<ParkingResponse> responses = new ArrayList<>();
+        for (SlotBooking slotBooking : slots) {
+            try {
+                checkForValidParkingData(slotBooking);
+                checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
+                responses.add(bookParking(slotBooking));
+            } catch (InvalidValueException e) {
+                responses.add(new ParkingResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+            }
+        }
+        slots.forEach(i -> responses.add(bookParking(i)));
         return responses;
     }
 }

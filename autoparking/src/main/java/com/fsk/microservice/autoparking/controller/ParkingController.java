@@ -35,14 +35,18 @@ public class ParkingController {
 
     @GetMapping("/slots/{officeId}")
     public List<Slot> listAvailableSlots(@PathVariable int officeId,
-                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Optional<LocalDateTime> startTime,
-                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Optional<LocalDateTime> endTime) {
+                                         @RequestParam(required = false)
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                 Optional<LocalDateTime> startTime,
+                                         @RequestParam(required = false)
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                 Optional<LocalDateTime> endTime) {
         log.info("startTime found is : {}", startTime);
         log.info("endTime found is : {}", endTime);
         LocalDateTime st = startTime.orElseGet(() -> LocalDateTime.now().plusHours(1));
         LocalDateTime et = startTime.orElseGet(() -> LocalDateTime.now().plusHours(9));
         parkingService.checkForValidBookingTime(st, et);
-        return parkingService.getAllAvailableSlots(officeId, st, et);
+        return parkingService.getAvailableSlotsOfOfficeInATimeSlot(officeId, st, et);
     }
 
     @PostMapping("/book")
@@ -59,16 +63,26 @@ public class ParkingController {
         return parkingService.bookParkingForContinuousDays(slotBooking, 7);
     }
 
-    @PostMapping("/book/{days}")
+    @PostMapping("/book/multiple/{days}")
     public List<ParkingResponse> bookForNoOfDays(@RequestBody SlotBooking slotBooking, @PathVariable long days) {
         parkingService.checkForValidParkingData(slotBooking);
         parkingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
         return parkingService.bookParkingForContinuousDays(slotBooking, days);
     }
 
+    @PostMapping("/book/multiple")
+    public List<ParkingResponse> bookForSpecificDays(@RequestBody List<SlotBooking> slotBooking) {
+        return parkingService.bookParkingForSpecificDays(slotBooking);
+    }
+
     @PostMapping("/cancel")
     public ParkingResponse cancel(@RequestBody SlotBooking slot) {
         return parkingService.cancelBooking(slot);
+    }
+
+    @PostMapping("/cancel/multiple")
+    public List<ParkingResponse> cancel(@RequestBody List<SlotBooking> slots) {
+        return parkingService.cancelMultipleBookings(slots);
     }
 
     @GetMapping("/mybookings")
@@ -78,6 +92,6 @@ public class ParkingController {
 
     @GetMapping("/mybookings/{bookingId}")
     public SlotBooking getBooking(@PathVariable long bookingId) {
-        return parkingService.getBookingStatus(bookingId);
+        return parkingService.getBookingDetails(bookingId);
     }
 }
