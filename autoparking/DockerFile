@@ -1,0 +1,5 @@
+FROM openjdk:11.0.6-jre
+WORKDIR /
+ADD target/autoparking-v1.jar //
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/autoparking-v1.jar"]

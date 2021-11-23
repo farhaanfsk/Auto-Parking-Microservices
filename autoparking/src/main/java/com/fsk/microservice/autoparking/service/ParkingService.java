@@ -111,7 +111,7 @@ public class ParkingService {
     public void checkForValidBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
         long hours = ChronoUnit.HOURS.between(startTime, endTime);
         log.info("Difference in hours of start and end time is : {}", hours);
-        if (hours > 10 || hours < 4 || startTime.isBefore(LocalDateTime.now().plusHours(1))) {
+        if (hours > 10 || hours < 4 || startTime.isBefore(LocalDateTime.now().plusHours(1).minusMinutes(5))){
             throw new InvalidValueException(
                     "The difference in start and end time should be minimum of 4hrs to max of 10 hrs");
         }
