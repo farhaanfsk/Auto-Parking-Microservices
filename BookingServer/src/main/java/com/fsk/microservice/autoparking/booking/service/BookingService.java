@@ -38,8 +38,7 @@ public class BookingService {
 
     public ResponseEntity<String> bookParking(SlotBooking slotBooking) {
         if (slotBooking.getStartTime().isAfter(LocalDateTime.now().plusDays(7))) {
-            return new ResponseEntity<>("You cannot book parking for Date greater than 7 days from the current date"
-                    , HttpStatus.BAD_REQUEST);
+            throw new InvalidValueException("You cannot book parking for Date greater than 7 days from the current date");
         }
         List<Long> bookedSlots = slotBookingRepo.findBySlotAndTimeBetween(slotBooking.getSlotId(),
                 slotBooking.getStartTime(), slotBooking.getEndTime());
@@ -49,11 +48,10 @@ public class BookingService {
             SlotBooking booking = slotBookingRepo.save(slotBooking);
             return new ResponseEntity<>(
                     "Slot is Booking is successfully Your booking Id : " + booking.getId()
-                            + "Slot id : " + booking.getSlotId() + " for Start time : " + booking.getStartTime()
-                            + "and end time : " + booking.getEndTime(), HttpStatus.ACCEPTED);
+                            + " Slot id : " + booking.getSlotId() + " for Start time : " + booking.getStartTime()
+                            + " and end time : " + booking.getEndTime(), HttpStatus.ACCEPTED);
         } else {
-            return new ResponseEntity<>("Unable to book slot as it is not Available for the given time slot"
-                    , HttpStatus.BAD_REQUEST);
+            throw new InvalidValueException("Unable to book slot as it is not Available for the given time slot");
         }
 
     }
@@ -80,7 +78,7 @@ public class BookingService {
                 checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
                 responses.add(bookParking(slotBooking));
             } catch (InvalidValueException e) {
-                responses.add(new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST));
+                responses.add(new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST));
             }
         }
         slots.forEach(i -> responses.add(bookParking(i)));
@@ -103,9 +101,12 @@ public class BookingService {
     public void checkForValidBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
         long hours = ChronoUnit.HOURS.between(startTime, endTime);
         log.info("Difference in hours of start and end time is : {}", hours);
-        if (hours > 10 || hours < 4 || startTime.isBefore(LocalDateTime.now().plusHours(1).minusMinutes(5))){
+        if (hours > 10 || hours < 4 ){
             throw new InvalidValueException(
                     "The difference in start and end time should be minimum of 4hrs to max of 10 hrs");
+        } else if(startTime.isBefore(LocalDateTime.now().plusHours(1).minusMinutes(5))){
+            throw new InvalidValueException(
+                    "The start and end time provided are invalid, provided time should be at least 1 hr from current time");
         }
     }
 }

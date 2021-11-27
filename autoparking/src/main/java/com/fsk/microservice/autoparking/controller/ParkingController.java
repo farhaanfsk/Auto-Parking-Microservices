@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,13 +25,51 @@ import java.util.Optional;
 public class ParkingController {
 
     private ParkingService parkingService;
+    private RestTemplate rest;
 
-    @Autowired
-    public ParkingController(ParkingService parkingService) {
+    public ParkingController(ParkingService parkingService, RestTemplate rest) {
         this.parkingService = parkingService;
+        this.rest = rest;
     }
 
-    @GetMapping("/slots/{officeId}")
+    @Operation(summary = "Book a parking slot")
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @PostMapping("/book")
+    public ResponseEntity<String> book(@RequestBody SlotBooking slotBooking) {
+        ResponseEntity<String> resp =  rest.postForEntity
+                ("https://BOOKING:8081/api/booking/book",slotBooking,String.class);
+        log.info(resp.getBody().toString());
+        log.info(resp.getStatusCode()+"");
+        return resp;
+    }
+
+    @Operation(summary = "Book parking slot for a week from now")
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @PostMapping("/book/week")
+    public List<ResponseEntity<String>> bookForWeek(@RequestBody SlotBooking slotBooking) {
+        return rest.postForEntity("https://Booking:8081/api/booking/book/week",slotBooking,List.class).getBody();
+    }
+
+    @Operation(summary = "Book parking slot for continuous no of days")
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @PostMapping("/book/multiple/{days}")
+    public List<ResponseEntity<String>> bookForNoOfDays(@RequestBody SlotBooking slotBooking, @PathVariable long days) {
+        return rest.postForEntity("https://Booking:8081/api/booking/book/multiple/"+days,slotBooking,List.class).getBody();
+    }
+
+    @Operation(summary = "Book parking slot for specific dats of week")
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @PostMapping("/book/multiple")
+    public List<ResponseEntity<String>> bookForSpecificDays(@RequestBody List<SlotBooking> slotBooking) {
+        return rest.postForEntity("https://Booking:8081/api/booking/book/multiple",slotBooking,List.class).getBody();
+    }
+
+    @GetMapping(value = "/{officeId}/slots", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+            /*,headers = {"Accept=application/xml","Accept=application/json"}*/)
     @Operation(summary = "Get all available slots of an office")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
@@ -50,16 +90,16 @@ public class ParkingController {
     @Operation(summary = "view current employee bookings")
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    @GetMapping("/mybookings")
-    public List<SlotBooking> listAllBookings(@RequestBody long empId) {
-        return parkingService.getAllBookings(empId);
+    @GetMapping("/{empId}/mybookings")
+    public List<SlotBooking> listAllBookings(@PathVariable long empId) {
+        return parkingService.getAllEmployeeBookings(empId);
     }
 
     @Operation(summary = "view a specific booking")
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    @GetMapping("/mybookings/{bookingId}")
-    public SlotBooking getBooking(@PathVariable long bookingId) {
-        return parkingService.getBookingDetails(bookingId);
+    @GetMapping("/{empId}/mybookings/{bookingId}")
+    public SlotBooking getBooking(@PathVariable long empId, @RequestBody long bookingId) {
+        return parkingService.getBookingDetails(empId, bookingId);
     }
 }

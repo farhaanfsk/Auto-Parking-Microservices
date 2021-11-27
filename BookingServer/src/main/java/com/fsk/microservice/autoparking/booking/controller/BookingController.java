@@ -5,6 +5,7 @@ import com.fsk.microservice.autoparking.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/autoparking")
+@RequestMapping("/api/booking")
+@Slf4j
 public class BookingController {
 
     @Autowired
@@ -23,6 +25,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @PostMapping("/book")
     public ResponseEntity<String> book(@RequestBody SlotBooking slotBooking) {
+        log.info(slotBooking.getStartTime()+"");
         bookingService.checkForValidParkingData(slotBooking);
         bookingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
         return bookingService.bookParking(slotBooking);

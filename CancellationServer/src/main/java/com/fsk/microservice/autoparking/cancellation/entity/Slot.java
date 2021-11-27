@@ -1,14 +1,13 @@
-package com.fsk.microservice.autoparking.entity;
+package com.fsk.microservice.autoparking.cancellation.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fsk.microservice.autoparking.enums.VehicleType;
+import com.fsk.microservice.autoparking.cancellation.enums.VehicleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table
@@ -16,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement
 public class Slot {
 
 	@Id
