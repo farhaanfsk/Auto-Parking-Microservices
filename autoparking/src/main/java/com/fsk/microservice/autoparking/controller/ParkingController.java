@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +27,9 @@ public class ParkingController {
 
     private ParkingService parkingService;
     private RestTemplate rest;
-    @Autowired
+    @Value("${autoparking.booking.server}")
     private String bookingUri;
-    @Autowired
+    @Value("${autoparking.cancellation.server}")
     private String cancellationUri;
 
     public ParkingController(ParkingService parkingService, RestTemplate rest) {
@@ -44,7 +44,7 @@ public class ParkingController {
     public ResponseEntity<String> book(@RequestBody SlotBooking slotBooking) {
         ResponseEntity<String> resp = rest.postForEntity
                 (bookingUri + "/book", slotBooking, String.class);
-        log.info(resp.getBody().toString());
+        log.info(resp.getBody());
         log.info(resp.getStatusCode() + "");
         return resp;
     }
@@ -89,7 +89,7 @@ public class ParkingController {
         return rest.postForEntity(cancellationUri + "/cancel/multiple", slots, List.class).getBody();
     }
 
-    @GetMapping(value = "/{officeId}/slots", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    @GetMapping(value = "/slots/{officeId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
             /*,headers = {"Accept=application/xml","Accept=application/json"}*/)
     @Operation(summary = "Get all available slots of an office")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
