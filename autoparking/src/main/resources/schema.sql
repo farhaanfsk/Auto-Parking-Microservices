@@ -39,3 +39,18 @@ FOREIGN KEY(emp_id) REFERENCES Employee(emp_id),
 FOREIGN KEY(slot_id) REFERENCES Slot(id),
 FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id)
 );
+
+CREATE TABLE userinfo(
+id INT PRIMARY KEY IDENTITY(1,1),
+username VARCHAR(50) NOT NULL,
+password VARCHAR(100) NOT NULL,
+emp_id INT NOT NULL,
+FOREIGN KEY(emp_id) REFERENCES Employee(emp_id)
+);
+
+CREATE TABLE user_role(
+id INT PRIMARY KEY IDENTITY(1,1),
+user_id INT NOT NULL,
+role VARCHAR(30) NOT NULL,
+FOREIGN KEY(user_id) REFERENCES userinfo(id)
+);

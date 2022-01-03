@@ -5,6 +5,7 @@ import com.fsk.microservices.autoparking.web.domain.SlotAvailability;
 import com.fsk.microservices.autoparking.web.services.AutoParkingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,12 +23,12 @@ public class IndexController {
 
     @RequestMapping
     public String home(Model model) {
-        log.info("Test");
         model.addAttribute("SlotAvailability", new SlotAvailability());
         return "index";
     }
 
     @PostMapping("/slots")
+    @PreAuthorize("hasRole('ADMIN') ")
     public String getSlots(@ModelAttribute("slot") SlotAvailability slot, Model model) {
         log.info(slot.toString());
         List<Slot> slots = autoParkingService.getAvailableSlots(slot);

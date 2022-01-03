@@ -51,3 +51,26 @@ INSERT INTO Slot VALUES(0,'TWO_WHEELER',2);
 INSERT INTO Slot VALUES(1,'TWO_WHEELER',3);
 INSERT INTO Slot VALUES(0,'TWO_WHEELER',3);
 INSERT INTO Slot VALUES(0,'TWO_WHEELER',3);
+
+
+INSERT INTO userinfo VALUES('Test1@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500000);
+INSERT INTO userinfo VALUES('Test2@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500001);
+INSERT INTO userinfo VALUES('Test3@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500002);
+INSERT INTO userinfo VALUES('Test4@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500003);
+INSERT INTO userinfo VALUES('Test5@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500004);
+INSERT INTO userinfo VALUES('Test6@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500005);
+INSERT INTO userinfo VALUES('Test7@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500006);
+INSERT INTO userinfo VALUES('Test8@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500007);
+INSERT INTO userinfo VALUES('Test9@mail.com', '$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500008);
+INSERT INTO userinfo VALUES('Test10@mail.com','$2a$07$wilECJ97iv9VyQhdmY2SXOEZSzEp4UTev09UyFO5dhLMeWwkxacFu', 500009);
+
+INSERT INTO user_role VALUES(1, 'ADMIN');
+INSERT INTO user_role VALUES(2, 'USER');
+INSERT INTO user_role VALUES(3, 'USER');
+INSERT INTO user_role VALUES(4, 'USER');
+INSERT INTO user_role VALUES(5, 'GUEST');
+INSERT INTO user_role VALUES(6, 'GUEST');
+INSERT INTO user_role VALUES(7, 'ADMIN');
+INSERT INTO user_role VALUES(8, 'USER');
+INSERT INTO user_role VALUES(9, 'GUEST');
+INSERT INTO user_role VALUES(10,'GUEST');
