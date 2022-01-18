@@ -89,6 +89,7 @@ public class ParkingController {
         return rest.postForEntity(cancellationUri + "/cancel/multiple", slots, List.class).getBody();
     }
 
+    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/slots/{officeId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
             /*,headers = {"Accept=application/xml","Accept=application/json"}*/)
     @Operation(summary = "Get all available slots of an office")

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Available Slots</title>
 </head>
 <body>
-<div>
+<div layout:fragment="content">
     <h1>Available slots are :</h1>
     <table id="slotTable" border="1">
         <tr>

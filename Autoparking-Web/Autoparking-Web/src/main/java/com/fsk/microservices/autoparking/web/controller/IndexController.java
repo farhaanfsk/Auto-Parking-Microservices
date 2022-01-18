@@ -27,6 +27,16 @@ public class IndexController {
         return "index";
     }
 
+    @RequestMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @RequestMapping("/logout-success")
+    public String logout() {
+        return "logout";
+    }
+
     @PostMapping("/slots")
     @PreAuthorize("hasRole('ADMIN') ")
     public String getSlots(@ModelAttribute("slot") SlotAvailability slot, Model model) {
