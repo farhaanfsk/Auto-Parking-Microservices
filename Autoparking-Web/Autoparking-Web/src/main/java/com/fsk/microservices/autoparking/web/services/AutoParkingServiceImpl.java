@@ -4,6 +4,7 @@ import com.fsk.microservices.autoparking.web.domain.Slot;
 import com.fsk.microservices.autoparking.web.domain.SlotAvailability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,6 +23,7 @@ public class AutoParkingServiceImpl implements AutoParkingService {
     public List<Slot> getAvailableSlots(SlotAvailability slotAvailability) {
         DateTimeFormatter uiFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        HttpHeaders headers = new HttpHeaders();
         return restTemplate.
                 getForObject("http://localhost:8081/api/autoparking/slots/{officeId}?startTime={startTime}&endTime={startTime}"
                         , List.class, slotAvailability.getOffice(),
