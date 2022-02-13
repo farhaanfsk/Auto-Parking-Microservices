@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Slots</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Available slots are :</h1>
+    <table id="slotTable" border="1">
+        <tr>
+            <th>slot id</th>
+            <th>Reserved</th>
+            <th>Slot type</th>
+        </tr>
+        <tr th:if="${slots.empty}">
+            <td colspan="2"> No slots Available for given time</td>
+        </tr>
+        <tr th:each="slot :${slots}">
+            <td th:text="${slot.id}"></td>
+            <td th:text="${slot.reserved}"></td>
+            <td th:text="${slot.slotType}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
