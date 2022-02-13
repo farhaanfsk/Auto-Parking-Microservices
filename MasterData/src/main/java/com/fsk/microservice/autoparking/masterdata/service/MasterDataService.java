@@ -5,10 +5,12 @@ import com.fsk.microservice.autoparking.masterdata.repositories.EmployeeReposito
 import com.fsk.microservice.autoparking.masterdata.repositories.VehicleRepository;
 import com.fsk.microservice.autoparking.masterdata.web.entities.Vehicle;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MasterDataService {
 
     private final VehicleRepository vehicleRepository;
@@ -16,8 +18,10 @@ public class MasterDataService {
 
     public void addVehicle(Vehicle vehicle) {
         Employee e = employeeRepository.findById(vehicle.getEmployee()).orElseThrow();
-        vehicleRepository.save(com.fsk.microservice.autoparking.masterdata.domain.Vehicle.builder()
+        com.fsk.microservice.autoparking.masterdata.domain.Vehicle v = com.fsk.microservice.autoparking.masterdata.domain.Vehicle.builder()
                 .employee(e).id(vehicle.getId()).vehicleNo(vehicle.getVehicleNo()).vehicleType(vehicle.getVehicleType())
-                .build());
+                .build();
+        log.info(v.toString());
+        vehicleRepository.save(v);
     }
 }
