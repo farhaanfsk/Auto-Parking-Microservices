@@ -6,10 +6,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,11 +27,11 @@ public class BookingController {
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @PostMapping("/book")
-    public ResponseEntity<String> book(@RequestBody SlotBooking slotBooking) {
+    public ResponseEntity book(@RequestBody SlotBooking slotBooking) {
         log.info(slotBooking.getStartTime()+"");
         bookingService.checkForValidParkingData(slotBooking);
         bookingService.checkForValidBookingTime(slotBooking.getStartTime(), slotBooking.getEndTime());
-        return bookingService.bookParking(slotBooking);
+        return ResponseEntity.accepted().body(bookingService.bookParking(slotBooking));
     }
 
     @Operation(summary = "Book parking slot for a week from now")

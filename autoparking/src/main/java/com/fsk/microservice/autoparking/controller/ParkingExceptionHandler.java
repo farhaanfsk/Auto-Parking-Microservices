@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
 @ControllerAdvice
-public class ParkingExceptionHandler {
+public class   ParkingExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> badRequest(InvalidValueException ex) {
